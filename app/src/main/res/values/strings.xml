@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Wishlist</string>
+    <string name="log_in_app_bar">Вход</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="log_in">Войти</string>
+    <string name="log_out">Выйти</string>
+    <string name="wait">Подождите…</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="register_app_bar">Регистрация</string>
+    <string name="no_account">Еще нет аккаунта?</string>
+    <string name="existing_account">Уже есть аккаунт?</string>
+    <string name="email">Адрес эл. почты</string>
+    <string name="profile">Профиль</string>
+    <string name="mine">Мои желания</string>
+    <string name="users">Пользователи</string>
+    <string name="error">Ошибка</string>
+    <string name="ok">ОК</string>
+    <string name="something_went_wrong">Что-то пошло не так. Попробуйте позже.</string>
+    <string name="successful_registration">Успешно</string>
+    <string name="now_you_can_log_in">Теперь вы можете войти в зарегистрированный аккаунт.</string>
+</resources>
