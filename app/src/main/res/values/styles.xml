@@ -69,11 +69,13 @@
     </style>
 
     <style name="TextAppearance.Title" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/contentColor</item>
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="android:textSize">22sp</item>
     </style>
     <style name="TextAppearance.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">?attr/contentColor</item>
         <item name="fontFamily">@font/roboto_regular</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textSize">16sp</item>
@@ -102,10 +104,22 @@
         <item name="android:minHeight">60dp</item>
         <item name="backgroundTint">@color/button_color</item>
     </style>
+    <style name="IconButton" parent="Widget.Material3.Button.IconButton.Outlined">
+        <item name="strokeColor">?attr/contentColor</item>
+        <item name="iconTint">?attr/contentColor</item>
+    </style>
+    <style name="IconButton.Danger" parent="Widget.Material3.Button.IconButton.Outlined">
+        <item name="strokeColor">?attr/dangerColor</item>
+        <item name="iconTint">?attr/dangerColor</item>
+    </style>
     <style name="Button.Danger" parent="Button">
         <item name="backgroundTint">?attr/dangerColor</item>
     </style>
     <style name="Button.Inverted.Tint" parent="Button">
+        <item name="android:textColor">?attr/contentColor</item>
+        <item name="backgroundTint">?attr/mainColor</item>
+    </style>
+    <style name="Button.Inverted.Tint.BottomSheetDialog" parent="Button">
         <item name="android:textColor">?attr/contentColor</item>
         <item name="backgroundTint">?attr/tintColor</item>
     </style>

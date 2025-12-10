@@ -12,27 +12,27 @@ import ru.otus.wishlist.api.models.GiftDto
 
 interface GiftsService {
 
-    @GET("{id}")
+    @GET("gifts/{id}")
     suspend fun getGift(@Path("id") id: String): Response<Gift>
 
-    @PUT("{id}")
+    @PUT("gifts/{id}")
     suspend fun updateGift(
         @Path("id") id: String, @Body requestBody: GiftDto
     ) : Response<Gift>
 
-    @DELETE("{id}")
+    @DELETE("gifts/{id}")
     suspend fun deleteGift(@Path("id") id: String): Response<Unit>
 
-    @GET("wishlist/{wishlistId}")
+    @GET("gifts/wishlist/{wishlistId}")
     suspend fun getAllGifts(
         @Path("wishlistId") wishlistId: String
     ): Response<List<Gift>>
 
-    @POST("wishlist/{wishlistId}")
+    @POST("gifts/wishlist/{wishlistId}")
     suspend fun createGift(
         @Path("wishlistId") wishlistId: String, @Body requestBody: GiftDto
     ): Response<Gift>
 
-    @PUT("{id}/reserve")
+    @PUT("gifts/{id}/reserve")
     suspend fun reserveGift(@Path("id") id: String): Response<Gift>
 }

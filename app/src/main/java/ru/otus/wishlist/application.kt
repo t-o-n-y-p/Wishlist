@@ -54,7 +54,7 @@ class Module {
     ): AuthService =
         Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("${hostname}auth/")
+            .baseUrl(hostname)
             .addConverterFactory(converterFactory)
             .build()
             .create(AuthService::class.java)
@@ -67,7 +67,7 @@ class Module {
     ): UsersService =
         Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("${hostname}users/")
+            .baseUrl(hostname)
             .addConverterFactory(converterFactory)
             .build()
             .create(UsersService::class.java)
@@ -81,7 +81,7 @@ class Module {
     ): WishlistsService =
         Retrofit.Builder()
             .client(okHttpClient.newBuilder().addInterceptor(authInterceptor).build())
-            .baseUrl("${hostname}wishlists/")
+            .baseUrl(hostname)
             .addConverterFactory(converterFactory)
             .build()
             .create(WishlistsService::class.java)
@@ -95,7 +95,7 @@ class Module {
     ): GiftsService =
         Retrofit.Builder()
             .client(okHttpClient.newBuilder().addInterceptor(authInterceptor).build())
-            .baseUrl("${hostname}gifts/")
+            .baseUrl(hostname)
             .addConverterFactory(converterFactory)
             .build()
             .create(GiftsService::class.java)

@@ -134,8 +134,7 @@
         app:layout_constraintTop_toBottomOf="@+id/register_or_wait_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAlignment="center"
-        android:textColor="?attr/contentColor"/>
+        android:textAlignment="center"/>
 
     <Button
         style="@style/Button"

@@ -8,9 +8,9 @@ import ru.otus.wishlist.api.models.Wishlist
 
 interface UsersService {
 
-    @GET
+    @GET("users")
     suspend fun getAllUsers(): Response<List<User>>
 
-    @GET("{userId}/wishlists")
+    @GET("users/{userId}/wishlists")
     suspend fun getUserWishlists(@Path("userId") userId: String): Response<List<Wishlist>>
 }

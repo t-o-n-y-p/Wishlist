@@ -7,6 +7,7 @@
         <item name="mainColor">@color/main</item>
         <item name="dangerColor">@color/danger</item>
 
+        <item name="android:statusBarColor">@color/grey_background</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="actionOverflowButtonStyle">@style/TopAppBar.OverflowButton</item>
         <item name="android:windowSplashScreenBackground">@color/grey_background</item>

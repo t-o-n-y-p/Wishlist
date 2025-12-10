@@ -19,4 +19,8 @@
     <string name="something_went_wrong">Что-то пошло не так. Попробуйте позже.</string>
     <string name="successful_registration">Успешно</string>
     <string name="now_you_can_log_in">Теперь вы можете войти в зарегистрированный аккаунт.</string>
+    <string name="save">Сохранить</string>
+    <string name="name">Название</string>
+    <string name="description">Описание</string>
+    <string name="no_results">Список пуст</string>
 </resources>
