@@ -1,4 +1,4 @@
-package ru.otus.wishlist.fragment.mine
+package ru.otus.wishlist.fragment.wishlists
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,8 +16,8 @@ import javax.inject.Inject
 import kotlin.math.min
 
 @HiltViewModel
-class MineFragmentViewModel @Inject constructor(
-    private val useCase: MineFragmentUseCase,
+class WishlistsFragmentViewModel @Inject constructor(
+    private val useCase: WishlistsFragmentUseCase,
     private val cache: WizardCache
 ) : ViewModel() {
 

@@ -1,4 +1,4 @@
-package ru.otus.wishlist.fragment.mine
+package ru.otus.wishlist.fragment.wishlists
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,16 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
-import ru.otus.wishlist.databinding.FragmentMineBinding
-import ru.otus.wishlist.fragment.wishlist.edit.WishlistEditFragment
+import ru.otus.wishlist.databinding.FragmentWishlistsBinding
+import ru.otus.wishlist.fragment.getUniversalParcelable
+import ru.otus.wishlist.fragment.wishlists.edit.WishlistEditFragment
 import ru.otus.wishlist.recyclerview.wish.WishItemAdapter
 import kotlin.math.min
 
 @AndroidEntryPoint
-class MineFragment : Fragment(R.layout.fragment_mine) {
+class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
 
-    private lateinit var binding: FragmentMineBinding
-    private val viewModel: MineFragmentViewModel by viewModels()
+    private lateinit var binding: FragmentWishlistsBinding
+    private val viewModel: WishlistsFragmentViewModel by viewModels()
     private val adapter: WishItemAdapter = WishItemAdapter(
         onEditButtonClicked = { item, position ->
             viewModel.saveCurrentWishlist(item, position)
@@ -34,43 +35,43 @@ class MineFragment : Fragment(R.layout.fragment_mine) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMineBinding.inflate(inflater)
+        binding = FragmentWishlistsBinding.inflate(inflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.wishlistsContent.wishlists.apply {
-            adapter = this@MineFragment.adapter
-            addOnScrollListener(viewModel.getOnScrollListener(this@MineFragment.adapter, pageSize))
+            adapter = this@WishlistsFragment.adapter
+            addOnScrollListener(viewModel.getOnScrollListener(this@WishlistsFragment.adapter, pageSize))
         }
         viewModel.dataState.observe(viewLifecycleOwner) {
             when (it) {
-                MineFragmentViewModel.DataState.NotSet -> {
+                WishlistsFragmentViewModel.DataState.NotSet -> {
                     binding.wishlistsLoading.loadingGroup.isVisible = false
                     binding.wishlistsContent.contentGroup.isVisible = false
                     binding.wishlistsError.errorGroup.isVisible = false
                     binding.wishlistsNoResults.noResultsGroup.isVisible = false
                 }
-                MineFragmentViewModel.DataState.Loading -> {
+                WishlistsFragmentViewModel.DataState.Loading -> {
                     binding.wishlistsLoading.loadingGroup.isVisible = true
                     binding.wishlistsContent.contentGroup.isVisible = false
                     binding.wishlistsError.errorGroup.isVisible = false
                     binding.wishlistsNoResults.noResultsGroup.isVisible = false
                 }
-                MineFragmentViewModel.DataState.Content -> {
+                WishlistsFragmentViewModel.DataState.Content -> {
                     binding.wishlistsLoading.loadingGroup.isVisible = false
                     binding.wishlistsContent.contentGroup.isVisible = true
                     binding.wishlistsError.errorGroup.isVisible = false
                     binding.wishlistsNoResults.noResultsGroup.isVisible = false
                 }
-                MineFragmentViewModel.DataState.Error -> {
+                WishlistsFragmentViewModel.DataState.Error -> {
                     binding.wishlistsLoading.loadingGroup.isVisible = false
                     binding.wishlistsContent.contentGroup.isVisible = false
                     binding.wishlistsError.errorGroup.isVisible = true
                     binding.wishlistsNoResults.noResultsGroup.isVisible = false
                 }
-                MineFragmentViewModel.DataState.Empty -> {
+                WishlistsFragmentViewModel.DataState.Empty -> {
                     binding.wishlistsLoading.loadingGroup.isVisible = false
                     binding.wishlistsContent.contentGroup.isVisible = false
                     binding.wishlistsError.errorGroup.isVisible = false
@@ -81,6 +82,10 @@ class MineFragment : Fragment(R.layout.fragment_mine) {
         viewModel.contentState.observe(viewLifecycleOwner) {
             adapter.submitList(it.slice(0 until min(it.size, pageSize)))
         }
+        binding.topAppBar.title =
+            arguments?.getUniversalParcelable<WishlistsData>("data")
+                ?.let { getString(R.string.wishlists_of_user).format(it.username) }
+                ?: getString(R.string.mine)
         viewModel.getAllWishlists()
     }
 }

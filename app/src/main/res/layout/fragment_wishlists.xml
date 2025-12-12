@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragment.mine.MineFragment">
+    tools:context=".fragment.wishlists.WishlistsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         style="@style/TopAppBarLayout"
@@ -19,7 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:minHeight="?attr/actionBarSize"
-            app:title="@string/mine"/>
+            app:title="@tools:sample/lorem[5]"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <include android:id="@+id/wishlists_loading" layout="@layout/loading"/>
-        <include android:id="@+id/wishlists_content" layout="@layout/fragment_wishlist"/>
+        <include android:id="@+id/wishlists_content" layout="@layout/fragment_wishlists_content"/>
         <include android:id="@+id/wishlists_error" layout="@layout/error"/>
         <include android:id="@+id/wishlists_no_results" layout="@layout/no_results"/>
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mine_tab_navigation"
+    app:startDestination="@id/mine_tab_fragment">
+
+    <fragment
+        android:id="@+id/mine_tab_fragment"
+        android:name="ru.otus.wishlist.fragment.wishlists.WishlistsFragment"
+        android:label="fragment_wishlists"
+        tools:layout="@layout/fragment_wishlists">
+        <argument
+            android:name="data"
+            app:argType="ru.otus.wishlist.fragment.wishlists.WishlistsData"
+            android:defaultValue="@null"/>
+    </fragment>
+</navigation>

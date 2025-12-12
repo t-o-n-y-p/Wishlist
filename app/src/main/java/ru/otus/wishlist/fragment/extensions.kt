@@ -1,6 +1,8 @@
 package ru.otus.wishlist.fragment
 
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -27,3 +29,9 @@ fun FragmentActivity.showErrorAlert(): AlertDialog =
         .setMessage(getString(R.string.something_went_wrong))
         .setPositiveButton(getString(R.string.ok)) { _, _ -> }
         .show()
+
+inline fun <reified T : Parcelable> Bundle.getUniversalParcelable(key: String): T? =
+    when {
+        SDK_INT >= 33 -> getParcelable(key, T::class.java)
+        else -> @Suppress("deprecation") getParcelable(key)
+    }

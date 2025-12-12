@@ -1,4 +1,4 @@
-package ru.otus.wishlist.fragment.mine
+package ru.otus.wishlist.fragment.wishlists
 
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +9,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @ViewModelScoped
-class MineFragmentUseCase @Inject constructor(
+class WishlistsFragmentUseCase @Inject constructor(
     private val wishlistsService: WishlistsService
 ) {
 

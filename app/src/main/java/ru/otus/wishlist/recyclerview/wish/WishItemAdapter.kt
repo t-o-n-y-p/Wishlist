@@ -12,7 +12,7 @@ class WishItemAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         WishItemViewHolder(
             view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_wishlist_info, parent, false),
+                .inflate(R.layout.fragment_wishlists_info, parent, false),
             onEditButtonClicked = onEditButtonClicked
         )
 
