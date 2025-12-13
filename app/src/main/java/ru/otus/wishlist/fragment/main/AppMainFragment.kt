@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentAppMainBinding
-import ru.otus.wishlist.fragment.FRAGMENT_PROFILE
+import ru.otus.wishlist.fragment.FRAGMENT_PROFILE_TAB
 import ru.otus.wishlist.fragment.LOGIN_STATUS
 import ru.otus.wishlist.fragment.LOGOUT
 
@@ -42,7 +42,7 @@ class AppMainFragment : Fragment(R.layout.fragment_app_main) {
             .getFragment<Fragment>()
             .childFragmentManager
             .setFragmentResultListener(
-                FRAGMENT_PROFILE,
+                FRAGMENT_PROFILE_TAB,
                 viewLifecycleOwner
             ) { _, bundle ->
                 when (bundle.getString(LOGIN_STATUS)) {

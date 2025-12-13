@@ -1,22 +1,22 @@
-package ru.otus.wishlist.fragment.profile
+package ru.otus.wishlist.fragment.tab.profile
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ru.otus.wishlist.WizardCache
-import ru.otus.wishlist.databinding.FragmentProfileBinding
+import ru.otus.wishlist.databinding.FragmentProfileTabBinding
 import ru.otus.wishlist.storage.UserPreferences
 import ru.otus.wishlist.storage.cleanup
 import ru.otus.wishlist.storage.get
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileFragmentViewModel @Inject constructor(
+class ProfileTabFragmentViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val cache: WizardCache
 ) : ViewModel() {
 
-    fun fillDataFromPreferences(binding: FragmentProfileBinding) =
+    fun fillDataFromPreferences(binding: FragmentProfileTabBinding) =
         sharedPreferences.get<UserPreferences>()
             ?.let { binding.usernameText.text = it.name }
 

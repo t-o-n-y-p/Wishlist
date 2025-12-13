@@ -31,8 +31,8 @@
 
     <fragment
         android:id="@+id/profile_fragment"
-        android:name="ru.otus.wishlist.fragment.profile.ProfileFragment"
-        tools:layout="@layout/fragment_profile">
+        android:name="ru.otus.wishlist.fragment.tab.profile.ProfileTabFragment"
+        tools:layout="@layout/fragment_profile_tab">
         <action
             android:id="@+id/go_to_mine_tab"
             app:destination="@+id/mine_tab_fragment"/>

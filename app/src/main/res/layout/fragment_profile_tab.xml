@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".fragment.profile.ProfileFragment">
+    tools:context=".fragment.tab.profile.ProfileTabFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         style="@style/TopAppBarLayout"
