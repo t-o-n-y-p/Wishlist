@@ -1,4 +1,4 @@
-package ru.otus.wishlist.fragment.wishlists.edit
+package ru.otus.wishlist.fragment.gifts.edit
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,25 +9,26 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
-import ru.otus.wishlist.databinding.FragmentWishlistsEditBinding
+import ru.otus.wishlist.databinding.FragmentGiftsEditBinding
 import ru.otus.wishlist.fragment.RESULT
 import ru.otus.wishlist.fragment.SUCCESS
 import ru.otus.wishlist.fragment.dismissWithToast
 import ru.otus.wishlist.fragment.setFragmentResult
 import ru.otus.wishlist.fragment.showErrorAlert
+import ru.otus.wishlist.fragment.wishlists.edit.WishlistsEditFragmentViewModel
 
 @AndroidEntryPoint
-class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishlists_edit) {
+class GiftsEditFragment : BottomSheetDialogFragment(R.layout.fragment_gifts_edit) {
 
-    private lateinit var binding: FragmentWishlistsEditBinding
-    private val viewModel: WishlistsEditFragmentViewModel by viewModels()
+    private lateinit var binding: FragmentGiftsEditBinding
+    private val viewModel: GiftsEditFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentWishlistsEditBinding.inflate(inflater)
+        binding = FragmentGiftsEditBinding.inflate(inflater)
         return binding.root
     }
 
@@ -35,15 +36,15 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
         super.onViewCreated(view, savedInstanceState)
         viewModel.createOrEditState.observe(viewLifecycleOwner) {
             when (it) {
-                WishlistsEditFragmentViewModel.CreateOrEditState.NotSet -> {
+                GiftsEditFragmentViewModel.CreateOrEditState.NotSet -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Loading -> {
+                GiftsEditFragmentViewModel.CreateOrEditState.Loading -> {
                     binding.saveButton.isVisible = false
                     binding.waitButton.isVisible = true
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Success -> {
+                GiftsEditFragmentViewModel.CreateOrEditState.Success -> {
                     dismissWithToast(viewModel.getToastText())
                     setFragmentResult(
                         fragment = viewModel.getFragmentResultRequestKey(),
@@ -51,7 +52,7 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
                         value = SUCCESS
                     )
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Error -> {
+                GiftsEditFragmentViewModel.CreateOrEditState.Error -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                     requireContext().showErrorAlert()
@@ -59,9 +60,10 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
             }
         }
         binding.saveButton.setOnClickListener {
-            viewModel.createOrUpdateWishlist(
-                title = binding.titleInput.text.toString(),
-                description = binding.descriptionInput.text.toString()
+            viewModel.createOrUpdateGift(
+                name = binding.nameInput.text.toString(),
+                description = binding.descriptionInput.text.toString(),
+                price = binding.priceInput.text.toString().toInt()
             )
         }
         viewModel.fillFieldsFromCache(binding)

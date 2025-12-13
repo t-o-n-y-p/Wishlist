@@ -21,8 +21,9 @@
     <string name="successful_registration">Успешно</string>
     <string name="now_you_can_log_in">Теперь вы можете войти в зарегистрированный аккаунт.</string>
     <string name="save">Сохранить</string>
-    <string name="name">Название</string>
-    <string name="description">Описание</string>
+    <string name="name_prompt">Название</string>
+    <string name="description_prompt">Описание</string>
+    <string name="price_prompt">Цена, ₽</string>
     <string name="no_results">Список пуст</string>
     <string name="wishlists_of_user">Желания %1$s</string>
     <string name="wishlists_updated">Список желаний обновлен.</string>
@@ -30,4 +31,8 @@
     <string name="wishlists_deleted">Список желаний удален.</string>
     <string name="are_you_sure">Вы уверены?</string>
     <string name="confirmation">Подтверждение</string>
+    <string name="gifts_updated">Подарок обновлен.</string>
+    <string name="gifts_created">Подарок создан.</string>
+    <string name="gifts_deleted">Подарок удален.</string>
+    <string name="wishlist_of_user_title">%1$s: %2$s</string>
 </resources>

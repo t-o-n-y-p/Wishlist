@@ -1,16 +1,16 @@
-package ru.otus.wishlist.recyclerview.wishlists
+package ru.otus.wishlist.recyclerview.gifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.otus.wishlist.recyclerview.gifts.GiftsItem
 
-data class WishlistsItem(
+data class GiftsItem(
     val id: String = "",
-    var title: String = "",
+    var name: String = "",
     var description: String = "",
-    val gifts: MutableList<GiftsItem> = mutableListOf(),
+    var price: Int = 0,
     private val mDeleteState: MutableLiveData<DeleteState> = MutableLiveData(DeleteState.NotSet)
 ) {
+
     val deleteState: LiveData<DeleteState>
         get() = mDeleteState
 

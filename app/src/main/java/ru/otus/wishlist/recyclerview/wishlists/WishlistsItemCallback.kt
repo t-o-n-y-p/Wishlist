@@ -8,5 +8,5 @@ class WishlistsItemCallback : DiffUtil.ItemCallback<WishlistsItem>() {
         oldItem == newItem
 
     override fun areContentsTheSame(oldItem: WishlistsItem, newItem: WishlistsItem): Boolean =
-        oldItem.title == newItem.title
+        oldItem.id == newItem.id
 }

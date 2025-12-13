@@ -368,6 +368,8 @@ components:
           type: number
         reserved:
           type: boolean
+        wishList:
+          "$ref": "#/components/schemas/Wishlist"
     User:
       type: object
       properties:

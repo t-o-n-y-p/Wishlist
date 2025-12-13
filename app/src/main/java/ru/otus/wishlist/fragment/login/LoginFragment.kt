@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -58,5 +59,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 password = binding.passwordTextInput.text.toString()
             )
         }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
     }
 }

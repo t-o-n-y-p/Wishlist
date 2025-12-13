@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.otus.wishlist.WizardCache
+import ru.otus.wishlist.recyclerview.gifts.GiftsItem
 import ru.otus.wishlist.recyclerview.wishlists.WishlistsItem
 import ru.otus.wishlist.recyclerview.wishlists.WishlistsItemAdapter
 import javax.inject.Inject
@@ -41,7 +42,7 @@ class WishlistsFragmentViewModel @Inject constructor(
             }
     }
 
-    private fun loadWishlistsAndSaveToCache() {
+    fun loadWishlistsAndSaveToCache() {
         cache.wishlists.clear()
         refreshDataTask.cancel()
         refreshDataTask = viewModelScope.launch {
@@ -55,7 +56,15 @@ class WishlistsFragmentViewModel @Inject constructor(
                             WishlistsItem(
                                 id = it.id.orEmpty(),
                                 title = it.title.orEmpty(),
-                                description = it.description.orEmpty()
+                                description = it.description.orEmpty(),
+                                gifts =
+                                    it.gifts?.map { gift ->
+                                        GiftsItem(
+                                            id = gift.id.orEmpty(),
+                                            name = gift.name.orEmpty(),
+                                            description = gift.description.orEmpty(),
+                                            price = gift.price?.toInt() ?: 0)
+                                    }.orEmpty().toMutableList()
                             )
                         }.toMutableList()
                         mContentState.value = cache.wishlists
@@ -113,6 +122,8 @@ class WishlistsFragmentViewModel @Inject constructor(
         cache.currentWishlist = null
         cache.currentWishlistPosition = 0
     }
+
+    fun getCurrentUser() = cache.currentUser
 
     sealed class DataState {
 

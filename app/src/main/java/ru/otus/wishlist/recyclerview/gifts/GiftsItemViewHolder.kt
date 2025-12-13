@@ -1,4 +1,4 @@
-package ru.otus.wishlist.recyclerview.wishlists
+package ru.otus.wishlist.recyclerview.gifts
 
 import android.view.View
 import android.widget.Button
@@ -7,12 +7,11 @@ import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import ru.otus.wishlist.R
 
-class WishlistsItemViewHolder(
+class GiftsItemViewHolder(
     view: View,
-    private val onItemClicked: (WishlistsItem, Int) -> Unit = { _, _ -> },
-    private val onEditButtonClicked: (WishlistsItem, Int) -> Unit = { _, _ -> },
-    private val onDeleteButtonClicked: (WishlistsItem) -> Unit = { _ -> },
-    private val onBind: (WishlistsItem, Group, Group) -> Unit = { _, _, _ -> }
+    private val onEditButtonClicked: (GiftsItem, Int) -> Unit = { _, _ -> },
+    private val onDeleteButtonClicked: (GiftsItem) -> Unit = { _ -> },
+    private val onBind: (GiftsItem, Group, Group) -> Unit = { _, _, _ -> }
 ) : RecyclerView.ViewHolder(view) {
 
     private val titleTextView: TextView by lazy {
@@ -20,6 +19,9 @@ class WishlistsItemViewHolder(
     }
     private val descriptionTextView: TextView by lazy {
         itemView.findViewById(R.id.subtitle)
+    }
+    private val priceTextView: TextView by lazy {
+        itemView.findViewById(R.id.price)
     }
     private val editButton: Button by lazy {
         itemView.findViewById(R.id.edit_button)
@@ -34,13 +36,11 @@ class WishlistsItemViewHolder(
         itemView.findViewById(R.id.loading_group)
     }
 
-    fun bind(item: WishlistsItem) {
+    fun bind(item: GiftsItem) {
         onBind(item, actionGroup, loadingGroup)
-        titleTextView.text = item.title
+        titleTextView.text = item.name
         descriptionTextView.text = item.description
-        itemView.setOnClickListener {
-            onItemClicked(item, absoluteAdapterPosition)
-        }
+        priceTextView.text = "${item.price} ₽"
         editButton.setOnClickListener {
             onEditButtonClicked(item, absoluteAdapterPosition)
         }

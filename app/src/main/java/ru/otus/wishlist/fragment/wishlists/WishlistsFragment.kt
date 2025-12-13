@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentWishlistsBinding
@@ -16,7 +17,6 @@ import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_CREATE
 import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_EDIT
 import ru.otus.wishlist.fragment.RESULT
 import ru.otus.wishlist.fragment.SUCCESS
-import ru.otus.wishlist.fragment.getParcelable
 import ru.otus.wishlist.fragment.showConfirmationAlert
 import ru.otus.wishlist.fragment.showErrorAlert
 import ru.otus.wishlist.fragment.wishlists.edit.WishlistsEditFragment
@@ -30,6 +30,10 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
     private lateinit var binding: FragmentWishlistsBinding
     private val viewModel: WishlistsFragmentViewModel by viewModels()
     private val adapter: WishlistsItemAdapter = WishlistsItemAdapter(
+        onItemClicked = { item, position ->
+            viewModel.saveCurrentWishlist(item, position)
+            findNavController().navigate(R.id.go_to_gifts)
+        },
         onEditButtonClicked = { item, position ->
             viewModel.saveCurrentWishlist(item, position)
             item.clearDeleteState()
@@ -139,7 +143,7 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
                 parentFragmentManager,
                 WishlistsEditFragment::class.simpleName)
         }
-        getParcelable<WishlistsData>()
+        viewModel.getCurrentUser()
             ?.apply {
                 binding.addButton.isVisible = false
                 binding.topAppBar.title = getString(R.string.wishlists_of_user).format(username)
@@ -147,6 +151,6 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             ?: let {
                 binding.topAppBar.title = getString(R.string.mine)
             }
-        viewModel.fillWishlistsFromCache()
+        viewModel.loadWishlistsAndSaveToCache()
     }
 }

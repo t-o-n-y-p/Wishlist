@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/mine_tab_fragment">
+    app:startDestination="@+id/wishlists_fragment">
 
     <fragment
-        android:id="@+id/mine_tab_fragment"
+        android:id="@+id/wishlists_fragment"
         android:name="ru.otus.wishlist.fragment.tab.mine.MineTabFragment"
         tools:layout="@layout/fragment_mine_tab">
         <action
@@ -23,7 +23,7 @@
         tools:layout="@layout/fragment_users">
         <action
             android:id="@+id/go_to_mine_tab"
-            app:destination="@+id/mine_tab_fragment"/>
+            app:destination="@+id/wishlists_fragment"/>
         <action
             android:id="@+id/go_to_profile"
             app:destination="@+id/profile_fragment"/>
@@ -35,7 +35,7 @@
         tools:layout="@layout/fragment_profile_tab">
         <action
             android:id="@+id/go_to_mine_tab"
-            app:destination="@+id/mine_tab_fragment"/>
+            app:destination="@+id/wishlists_fragment"/>
         <action
             android:id="@+id/go_to_users"
             app:destination="@+id/users_fragment"/>

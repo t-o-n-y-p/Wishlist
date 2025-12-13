@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -64,6 +65,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 email = binding.emailTextInput.text.toString(),
                 password = binding.passwordTextInput.text.toString()
             )
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.go_to_login)
         }
     }
 }

@@ -1,4 +1,4 @@
-package ru.otus.wishlist.fragment.wishlists.edit
+package ru.otus.wishlist.fragment.gifts.edit
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,16 +8,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.otus.wishlist.R
 import ru.otus.wishlist.WizardCache
-import ru.otus.wishlist.api.models.Wishlist
-import ru.otus.wishlist.databinding.FragmentWishlistsEditBinding
-import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_CREATE
-import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_EDIT
-import ru.otus.wishlist.recyclerview.wishlists.WishlistsItem
+import ru.otus.wishlist.api.models.Gift
+import ru.otus.wishlist.databinding.FragmentGiftsEditBinding
+import ru.otus.wishlist.fragment.FRAGMENT_GIFTS_CREATE
+import ru.otus.wishlist.fragment.FRAGMENT_GIFTS_EDIT
+import ru.otus.wishlist.recyclerview.gifts.GiftsItem
 import javax.inject.Inject
 
 @HiltViewModel
-class WishlistsEditFragmentViewModel @Inject constructor(
-    private val useCase: WishlistsEditFragmentUseCase,
+class GiftsEditFragmentViewModel @Inject constructor(
+    private val useCase: GiftsEditFragmentUseCase,
     private val cache: WizardCache
 ) : ViewModel() {
 
@@ -26,38 +26,44 @@ class WishlistsEditFragmentViewModel @Inject constructor(
     val createOrEditState: LiveData<CreateOrEditState>
         get() = mCreateOrEditState
 
-    fun fillFieldsFromCache(binding: FragmentWishlistsEditBinding) =
-        cache.currentWishlist?.apply {
-            binding.titleInput.setText(title)
+    fun fillFieldsFromCache(binding: FragmentGiftsEditBinding) =
+        cache.currentGift?.apply {
+            binding.nameInput.setText(name)
             binding.descriptionInput.setText(description)
+            binding.priceInput.setText(price.toString())
         }
 
-    fun createOrUpdateWishlist(title: String, description: String) =
+    fun createOrUpdateGift(name: String, description: String, price: Int) =
         viewModelScope.launch {
             try {
-                cache.currentWishlist?.apply {
+                cache.currentGift?.apply {
                     mCreateOrEditState.value = CreateOrEditState.Loading
-                    useCase.updateWishlist(
+                    useCase.updateGift(
                         id = id,
-                        title = title,
-                        description = description
+                        name = name,
+                        description = description,
+                        price = price
                     ).getOrThrow()
-                    this.title = title
+                    this.name = name
                     this.description = description
+                    this.price = price
                     mCreateOrEditState.value = CreateOrEditState.Success
                 } ?: let {
                     mCreateOrEditState.value = CreateOrEditState.Loading
-                    val createResponse: Wishlist =
-                        useCase.createWishlist(
-                            title = title,
-                            description = description
+                    val createResponse: Gift =
+                        useCase.createGift(
+                            wishlistId = cache.currentWishlist?.id.orEmpty(),
+                            name = name,
+                            description = description,
+                            price = price
                         ).getOrThrow()
-                    val newWishlist = WishlistsItem(
+                    val newGift = GiftsItem(
                         id = createResponse.id.orEmpty(),
-                        title = title,
-                        description = description
+                        name = name,
+                        description = description,
+                        price = price
                     )
-                    cache.wishlists.add(newWishlist)
+                    cache.currentWishlist?.gifts?.add(newGift)
                     mCreateOrEditState.value = CreateOrEditState.Success
                 }
             } catch (_: Throwable) {
@@ -66,10 +72,10 @@ class WishlistsEditFragmentViewModel @Inject constructor(
         }
 
     fun getToastText() =
-        cache.currentWishlist?.let { R.string.wishlists_updated } ?: R.string.wishlists_created
+        cache.currentGift?.let { R.string.gifts_updated } ?: R.string.gifts_created
 
     fun getFragmentResultRequestKey() =
-        cache.currentWishlist?.let { FRAGMENT_WISHLISTS_EDIT } ?: FRAGMENT_WISHLISTS_CREATE
+        cache.currentGift?.let { FRAGMENT_GIFTS_EDIT } ?: FRAGMENT_GIFTS_CREATE
 
     sealed class CreateOrEditState {
 

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import ru.otus.wishlist.R
 
 class WishlistsItemAdapter(
+    private val onItemClicked: (WishlistsItem, Int) -> Unit,
     private val onEditButtonClicked: (WishlistsItem, Int) -> Unit,
     private val onDeleteButtonClicked: (WishlistsItem) -> Unit,
     private val onBind: (WishlistsItem, Group, Group) -> Unit
@@ -16,6 +17,7 @@ class WishlistsItemAdapter(
         WishlistsItemViewHolder(
             view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_wishlists_info, parent, false),
+            onItemClicked = onItemClicked,
             onEditButtonClicked = onEditButtonClicked,
             onDeleteButtonClicked = onDeleteButtonClicked,
             onBind = onBind
