@@ -16,6 +16,7 @@
     <string name="users">Пользователи</string>
     <string name="error">Ошибка</string>
     <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
     <string name="something_went_wrong">Что-то пошло не так. Попробуйте позже.</string>
     <string name="successful_registration">Успешно</string>
     <string name="now_you_can_log_in">Теперь вы можете войти в зарегистрированный аккаунт.</string>
@@ -24,4 +25,9 @@
     <string name="description">Описание</string>
     <string name="no_results">Список пуст</string>
     <string name="wishlists_of_user">Желания %1$s</string>
+    <string name="wishlists_updated">Список желаний обновлен.</string>
+    <string name="wishlists_created">Список желаний создан.</string>
+    <string name="wishlists_deleted">Список желаний удален.</string>
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="confirmation">Подтверждение</string>
 </resources>

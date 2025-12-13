@@ -45,7 +45,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 LoginFragmentViewModel.LoginState.Error -> {
                     binding.logInButton.isVisible = true
                     binding.waitButton.isVisible = false
-                    requireActivity().showErrorAlert()
+                    requireContext().showErrorAlert()
                 }
             }
         }

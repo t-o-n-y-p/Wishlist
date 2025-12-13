@@ -1,22 +1,27 @@
-package ru.otus.wishlist.fragment.wishlists
+package ru.otus.wishlist.fragment.wishlists.edit
 
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.otus.wishlist.api.models.Wishlist
+import ru.otus.wishlist.api.models.WishlistDto
 import ru.otus.wishlist.service.WishlistsService
 import java.io.IOException
 import javax.inject.Inject
 
 @ViewModelScoped
-class WishlistsFragmentUseCase @Inject constructor(
+class WishlistsEditFragmentUseCase @Inject constructor(
     private val wishlistsService: WishlistsService
 ) {
 
-    suspend fun getAllWishlists(): Result<List<Wishlist>> =
+    suspend fun updateWishlist(id: String, title: String, description: String): Result<Wishlist> =
         runCatching {
+            val dto = WishlistDto(
+                title = title,
+                description = description
+            )
             val response = withContext(Dispatchers.IO) {
-                wishlistsService.getAllWishlists()
+                wishlistsService.updateWishlist(id, dto)
             }
             when {
                 response.code() == 200 -> response.body() ?: throw IOException()
@@ -24,10 +29,14 @@ class WishlistsFragmentUseCase @Inject constructor(
             }
         }
 
-    suspend fun deleteWishlist(id: String): Result<Unit> =
+    suspend fun createWishlist(title: String, description: String): Result<Wishlist> =
         runCatching {
+            val dto = WishlistDto(
+                title = title,
+                description = description
+            )
             val response = withContext(Dispatchers.IO) {
-                wishlistsService.deleteWishlist(id = id)
+                wishlistsService.createWishlist(dto)
             }
             when {
                 response.code() == 200 -> response.body() ?: throw IOException()

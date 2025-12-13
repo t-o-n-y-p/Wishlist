@@ -35,6 +35,12 @@
         android:paddingEnd="8dp"
         android:gravity="center_vertical"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/action_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="edit_button,delete_button"/>
+
     <Button
         style="@style/IconButton"
         android:id="@+id/edit_button"
@@ -54,5 +60,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title"
         app:layout_constraintBottom_toBottomOf="@+id/subtitle"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/loading_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="loading"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        style="@style/CircularProgressIndicator"
+        android:id="@+id/loading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="@+id/subtitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,8 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import ru.otus.wishlist.WizardCache
-import ru.otus.wishlist.recyclerview.wish.WishItem
-import ru.otus.wishlist.recyclerview.wish.WishItemAdapter
+import ru.otus.wishlist.recyclerview.wishlists.WishlistsItem
+import ru.otus.wishlist.recyclerview.wishlists.WishlistsItemAdapter
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -24,13 +24,13 @@ class WishlistsFragmentViewModel @Inject constructor(
     private val mDataState = MutableLiveData<DataState>(DataState.NotSet)
     val dataState: LiveData<DataState>
         get() = mDataState
-    private val mContentState = MutableLiveData<List<WishItem>>()
-    val contentState: LiveData<List<WishItem>>
+    private val mContentState = MutableLiveData<List<WishlistsItem>>()
+    val contentState: LiveData<List<WishlistsItem>>
         get() = mContentState
 
     private var refreshDataTask: Job = Job()
 
-    fun getAllWishlists() {
+    fun fillWishlistsFromCache() {
         cache.wishlists
             .takeIf { it.isEmpty() }
             ?.let { loadWishlistsAndSaveToCache() }
@@ -52,21 +52,22 @@ class WishlistsFragmentViewModel @Inject constructor(
                     ?.let { mDataState.value = DataState.Empty }
                     ?: let {
                         cache.wishlists = data.map {
-                            WishItem(
-                                name = it.title.orEmpty(),
+                            WishlistsItem(
+                                id = it.id.orEmpty(),
+                                title = it.title.orEmpty(),
                                 description = it.description.orEmpty()
                             )
                         }.toMutableList()
                         mContentState.value = cache.wishlists
                         mDataState.value = DataState.Content
                     }
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
                 mDataState.value = DataState.Error
             }
         }
     }
 
-    fun getOnScrollListener(adapter: WishItemAdapter, pageSize: Int) =
+    fun getOnScrollListener(adapter: WishlistsItemAdapter, pageSize: Int) =
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -85,9 +86,32 @@ class WishlistsFragmentViewModel @Inject constructor(
             }
         }
 
-    fun saveCurrentWishlist(item: WishItem, position: Int) {
+    fun saveCurrentWishlist(item: WishlistsItem, position: Int) {
         cache.currentWishlist = item
         cache.currentWishlistPosition = position
+    }
+
+    fun getCurrentWishlistPosition() = cache.currentWishlistPosition
+
+    fun deleteWishlistItem(item: WishlistsItem) =
+        viewModelScope.launch {
+            try {
+                item.deleteInProgress()
+                useCase.deleteWishlist(item.id).getOrThrow()
+                item.deleteSuccess()
+                cache.wishlists.apply {
+                    remove(item)
+                    mContentState.value = this
+                    ifEmpty { mDataState.value = DataState.Empty }
+                }
+            } catch (_: Throwable) {
+                item.deleteError()
+            }
+        }
+
+    fun clearCurrentWishlist() {
+        cache.currentWishlist = null
+        cache.currentWishlistPosition = 0
     }
 
     sealed class DataState {

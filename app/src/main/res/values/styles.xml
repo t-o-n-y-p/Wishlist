@@ -108,6 +108,11 @@
         <item name="strokeColor">?attr/contentColor</item>
         <item name="iconTint">?attr/contentColor</item>
     </style>
+    <style name="FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Medium">
+        <item name="backgroundTint">?attr/tintColor</item>
+        <item name="tint">?attr/contentColor</item>
+        <item name="rippleColor">?attr/contentColor</item>
+    </style>
     <style name="IconButton.Danger" parent="Widget.Material3.Button.IconButton.Outlined">
         <item name="strokeColor">?attr/dangerColor</item>
         <item name="iconTint">?attr/dangerColor</item>

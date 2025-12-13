@@ -4,15 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentWishlistsBinding
-import ru.otus.wishlist.fragment.getUniversalParcelable
-import ru.otus.wishlist.fragment.wishlists.edit.WishlistEditFragment
-import ru.otus.wishlist.recyclerview.wish.WishItemAdapter
+import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_CREATE
+import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_EDIT
+import ru.otus.wishlist.fragment.RESULT
+import ru.otus.wishlist.fragment.SUCCESS
+import ru.otus.wishlist.fragment.getParcelable
+import ru.otus.wishlist.fragment.showConfirmationAlert
+import ru.otus.wishlist.fragment.showErrorAlert
+import ru.otus.wishlist.fragment.wishlists.edit.WishlistsEditFragment
+import ru.otus.wishlist.recyclerview.wishlists.WishlistsItem
+import ru.otus.wishlist.recyclerview.wishlists.WishlistsItemAdapter
 import kotlin.math.min
 
 @AndroidEntryPoint
@@ -20,12 +29,44 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
 
     private lateinit var binding: FragmentWishlistsBinding
     private val viewModel: WishlistsFragmentViewModel by viewModels()
-    private val adapter: WishItemAdapter = WishItemAdapter(
+    private val adapter: WishlistsItemAdapter = WishlistsItemAdapter(
         onEditButtonClicked = { item, position ->
             viewModel.saveCurrentWishlist(item, position)
-            WishlistEditFragment().show(
-                requireActivity().supportFragmentManager,
-                WishlistEditFragment::class.simpleName)
+            item.clearDeleteState()
+            WishlistsEditFragment().show(
+                parentFragmentManager,
+                WishlistsEditFragment::class.simpleName)
+        },
+        onDeleteButtonClicked = { item ->
+            requireActivity().showConfirmationAlert { _, _ ->
+                viewModel.deleteWishlistItem(item)
+            }
+        },
+        onBind = { item, actionGroup, loadingGroup ->
+            item.deleteState.observe(viewLifecycleOwner) {
+                when (it) {
+                    WishlistsItem.DeleteState.NotSet -> {
+                        actionGroup.isVisible = true
+                        loadingGroup.isVisible = false
+                    }
+                    WishlistsItem.DeleteState.Loading -> {
+                        actionGroup.isVisible = false
+                        loadingGroup.isVisible = true
+                    }
+                    WishlistsItem.DeleteState.Success -> {
+                        Toast.makeText(
+                            context,
+                            R.string.wishlists_deleted,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    WishlistsItem.DeleteState.Error -> {
+                        actionGroup.isVisible = true
+                        loadingGroup.isVisible = false
+                        requireContext().showErrorAlert()
+                    }
+                }
+            }
         }
     )
     private val pageSize = 10
@@ -44,6 +85,16 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
         binding.wishlistsContent.wishlists.apply {
             adapter = this@WishlistsFragment.adapter
             addOnScrollListener(viewModel.getOnScrollListener(this@WishlistsFragment.adapter, pageSize))
+        }
+        setFragmentResultListener(FRAGMENT_WISHLISTS_EDIT) { _, bundle ->
+            when (bundle.getString(RESULT)) {
+                SUCCESS -> adapter.notifyItemChanged(viewModel.getCurrentWishlistPosition())
+            }
+        }
+        setFragmentResultListener(FRAGMENT_WISHLISTS_CREATE) { _, bundle ->
+            when (bundle.getString(RESULT)) {
+                SUCCESS -> viewModel.fillWishlistsFromCache()
+            }
         }
         viewModel.dataState.observe(viewLifecycleOwner) {
             when (it) {
@@ -82,10 +133,20 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
         viewModel.contentState.observe(viewLifecycleOwner) {
             adapter.submitList(it.slice(0 until min(it.size, pageSize)))
         }
-        binding.topAppBar.title =
-            arguments?.getUniversalParcelable<WishlistsData>("data")
-                ?.let { getString(R.string.wishlists_of_user).format(it.username) }
-                ?: getString(R.string.mine)
-        viewModel.getAllWishlists()
+        binding.addButton.setOnClickListener {
+            viewModel.clearCurrentWishlist()
+            WishlistsEditFragment().show(
+                parentFragmentManager,
+                WishlistsEditFragment::class.simpleName)
+        }
+        getParcelable<WishlistsData>()
+            ?.apply {
+                binding.addButton.isVisible = false
+                binding.topAppBar.title = getString(R.string.wishlists_of_user).format(username)
+            }
+            ?: let {
+                binding.topAppBar.title = getString(R.string.mine)
+            }
+        viewModel.fillWishlistsFromCache()
     }
 }

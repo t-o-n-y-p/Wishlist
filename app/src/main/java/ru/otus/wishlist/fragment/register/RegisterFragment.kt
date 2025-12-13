@@ -51,7 +51,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 RegisterFragmentViewModel.RegisterState.Error -> {
                     binding.registerButton.isVisible = true
                     binding.waitButton.isVisible = false
-                    requireActivity().showErrorAlert()
+                    requireContext().showErrorAlert()
                 }
             }
         }

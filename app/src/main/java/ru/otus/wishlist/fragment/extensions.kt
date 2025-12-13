@@ -1,5 +1,7 @@
 package ru.otus.wishlist.fragment
 
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
@@ -23,15 +25,25 @@ fun Fragment.setFragmentResult(fragment: String, key: String, value: String) =
         Bundle().apply { putString(key, value) }
     )
 
-fun FragmentActivity.showErrorAlert(): AlertDialog =
+fun Context.showErrorAlert(): AlertDialog =
     MaterialAlertDialogBuilder(this, R.style.Alert)
         .setTitle(getString(R.string.error))
         .setMessage(getString(R.string.something_went_wrong))
         .setPositiveButton(getString(R.string.ok)) { _, _ -> }
         .show()
 
-inline fun <reified T : Parcelable> Bundle.getUniversalParcelable(key: String): T? =
-    when {
-        SDK_INT >= 33 -> getParcelable(key, T::class.java)
-        else -> @Suppress("deprecation") getParcelable(key)
+fun FragmentActivity.showConfirmationAlert(action: (DialogInterface, Int) -> Unit): AlertDialog =
+    MaterialAlertDialogBuilder(this, R.style.Alert)
+        .setTitle(getString(R.string.confirmation))
+        .setMessage(getString(R.string.are_you_sure))
+        .setPositiveButton(getString(R.string.ok), action)
+        .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+        .show()
+
+inline fun <reified T : Parcelable> Fragment.getParcelable(): T? =
+    arguments?.let {
+        when {
+            SDK_INT >= 33 -> it.getParcelable("data", T::class.java)
+            else -> @Suppress("deprecation") it.getParcelable("data")
+        }
     }
