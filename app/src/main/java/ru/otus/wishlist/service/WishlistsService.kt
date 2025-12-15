@@ -28,4 +28,7 @@ interface WishlistsService {
 
     @DELETE("wishlists/{id}")
     suspend fun deleteWishlist(@Path("id") id: String): Response<Unit>
+
+    @GET("wishlists/user/{userId}")
+    suspend fun getUserWishlists(@Path("userId") userId: String): Response<List<Wishlist>>
 }

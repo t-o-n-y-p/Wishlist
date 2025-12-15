@@ -9,10 +9,6 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentProfileTabBinding
-import ru.otus.wishlist.fragment.FRAGMENT_PROFILE_TAB
-import ru.otus.wishlist.fragment.LOGIN_STATUS
-import ru.otus.wishlist.fragment.LOGOUT
-import ru.otus.wishlist.fragment.setFragmentResult
 import kotlin.getValue
 
 @AndroidEntryPoint
@@ -34,11 +30,6 @@ class ProfileTabFragment : Fragment(R.layout.fragment_profile_tab) {
         super.onViewCreated(view, savedInstanceState)
         binding.logOutButton.setOnClickListener {
             viewModel.logout()
-            setFragmentResult(
-                fragment = FRAGMENT_PROFILE_TAB,
-                key = LOGIN_STATUS,
-                value = LOGOUT
-            )
         }
         viewModel.fillDataFromPreferences(binding)
     }

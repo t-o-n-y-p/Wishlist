@@ -20,8 +20,7 @@ class AuthInterceptor @Inject constructor(
                     "Authorization",
                     sharedPreferences
                         .get<UserPreferences>()
-                        ?.getAuthHeaderValue()
-                        .orEmpty()
+                        .getAuthHeaderValue()
                 )
                 .build())
 }

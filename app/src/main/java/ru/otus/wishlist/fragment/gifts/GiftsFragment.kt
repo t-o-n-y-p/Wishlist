@@ -16,6 +16,7 @@ import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentGiftsBinding
 import ru.otus.wishlist.fragment.FRAGMENT_GIFTS_CREATE
 import ru.otus.wishlist.fragment.FRAGMENT_GIFTS_EDIT
+import ru.otus.wishlist.fragment.RECYCLER_VIEW_PAGE_SIZE
 import ru.otus.wishlist.fragment.RESULT
 import ru.otus.wishlist.fragment.SUCCESS
 import ru.otus.wishlist.fragment.gifts.edit.GiftsEditFragment
@@ -31,9 +32,14 @@ class GiftsFragment : Fragment(R.layout.fragment_gifts) {
     private lateinit var binding: FragmentGiftsBinding
     private val viewModel: GiftsFragmentViewModel by viewModels()
     private val adapter: GiftsItemAdapter = GiftsItemAdapter(
+        onCheckedChange = { item, position ->
+            viewModel.saveCurrentGift(item, position)
+            item.clearOperationState()
+            viewModel.reserveGiftItem(item)
+        },
         onEditButtonClicked = { item, position ->
             viewModel.saveCurrentGift(item, position)
-            item.clearDeleteState()
+            item.clearOperationState()
             GiftsEditFragment().show(
                 parentFragmentManager,
                 GiftsEditFragment::class.simpleName)
@@ -43,26 +49,36 @@ class GiftsFragment : Fragment(R.layout.fragment_gifts) {
                 viewModel.deleteGiftItem(item)
             }
         },
-        onBind = { item, actionGroup, loadingGroup ->
-            item.deleteState.observe(viewLifecycleOwner) {
+        onBind = { item, actionGroup, loadingGroup, reservedGroup, reservedSwitch ->
+            item.operationState.observe(viewLifecycleOwner) {
                 when (it) {
-                    GiftsItem.DeleteState.NotSet -> {
-                        actionGroup.isVisible = true
+                    GiftsItem.OperationState.NotSet -> {
+                        actionGroup.isVisible = viewModel.getCurrentUser() == null
+                        reservedGroup.isVisible = viewModel.getCurrentUser() != null
                         loadingGroup.isVisible = false
                     }
-                    GiftsItem.DeleteState.Loading -> {
+                    GiftsItem.OperationState.Loading -> {
                         actionGroup.isVisible = false
+                        reservedGroup.isVisible = false
                         loadingGroup.isVisible = true
                     }
-                    GiftsItem.DeleteState.Success -> {
+                    GiftsItem.OperationState.Success -> {
+                        actionGroup.isVisible = viewModel.getCurrentUser() == null
+                        reservedGroup.isVisible = viewModel.getCurrentUser() != null
+                        loadingGroup.isVisible = false
                         Toast.makeText(
                             context,
-                            R.string.gifts_deleted,
+                            viewModel.getCurrentUser()
+                                ?.let { R.string.gifts_status_changed }
+                                ?: R.string.gifts_deleted,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-                    GiftsItem.DeleteState.Error -> {
-                        actionGroup.isVisible = true
+                    GiftsItem.OperationState.Error -> {
+                        // toggle switch back to its previous position
+                        reservedSwitch.toggle()
+                        actionGroup.isVisible = viewModel.getCurrentUser() == null
+                        reservedGroup.isVisible = viewModel.getCurrentUser() != null
                         loadingGroup.isVisible = false
                         requireContext().showErrorAlert()
                     }
@@ -70,7 +86,6 @@ class GiftsFragment : Fragment(R.layout.fragment_gifts) {
             }
         }
     )
-    private val pageSize = 10
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,7 +100,9 @@ class GiftsFragment : Fragment(R.layout.fragment_gifts) {
         super.onViewCreated(view, savedInstanceState)
         binding.giftsContent.gifts.apply {
             adapter = this@GiftsFragment.adapter
-            addOnScrollListener(viewModel.getOnScrollListener(this@GiftsFragment.adapter, pageSize))
+            addOnScrollListener(
+                viewModel.getOnScrollListener(
+                    this@GiftsFragment.adapter, RECYCLER_VIEW_PAGE_SIZE))
         }
         setFragmentResultListener(FRAGMENT_GIFTS_EDIT) { _, bundle ->
             when (bundle.getString(RESULT)) {
@@ -132,7 +149,7 @@ class GiftsFragment : Fragment(R.layout.fragment_gifts) {
             }
         }
         viewModel.contentState.observe(viewLifecycleOwner) {
-            adapter.submitList(it.slice(0 until min(it.size, pageSize)))
+            adapter.submitList(it.slice(0 until min(it.size, RECYCLER_VIEW_PAGE_SIZE)))
         }
         binding.addButton.setOnClickListener {
             viewModel.clearCurrentGift()

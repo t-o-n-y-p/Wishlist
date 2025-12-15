@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -15,6 +16,7 @@ import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentWishlistsBinding
 import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_CREATE
 import ru.otus.wishlist.fragment.FRAGMENT_WISHLISTS_EDIT
+import ru.otus.wishlist.fragment.RECYCLER_VIEW_PAGE_SIZE
 import ru.otus.wishlist.fragment.RESULT
 import ru.otus.wishlist.fragment.SUCCESS
 import ru.otus.wishlist.fragment.showConfirmationAlert
@@ -50,7 +52,7 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             item.deleteState.observe(viewLifecycleOwner) {
                 when (it) {
                     WishlistsItem.DeleteState.NotSet -> {
-                        actionGroup.isVisible = true
+                        actionGroup.isVisible = viewModel.getCurrentUser() == null
                         loadingGroup.isVisible = false
                     }
                     WishlistsItem.DeleteState.Loading -> {
@@ -73,7 +75,6 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             }
         }
     )
-    private val pageSize = 10
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +89,9 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
         super.onViewCreated(view, savedInstanceState)
         binding.wishlistsContent.wishlists.apply {
             adapter = this@WishlistsFragment.adapter
-            addOnScrollListener(viewModel.getOnScrollListener(this@WishlistsFragment.adapter, pageSize))
+            addOnScrollListener(
+                viewModel.getOnScrollListener(
+                    this@WishlistsFragment.adapter, RECYCLER_VIEW_PAGE_SIZE))
         }
         setFragmentResultListener(FRAGMENT_WISHLISTS_EDIT) { _, bundle ->
             when (bundle.getString(RESULT)) {
@@ -135,7 +138,7 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             }
         }
         viewModel.contentState.observe(viewLifecycleOwner) {
-            adapter.submitList(it.slice(0 until min(it.size, pageSize)))
+            adapter.submitList(it.slice(0 until min(it.size, RECYCLER_VIEW_PAGE_SIZE)))
         }
         binding.addButton.setOnClickListener {
             viewModel.clearCurrentWishlist()
@@ -147,6 +150,9 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             ?.apply {
                 binding.addButton.isVisible = false
                 binding.topAppBar.title = getString(R.string.wishlists_of_user).format(username)
+                requireActivity().onBackPressedDispatcher.addCallback(this@WishlistsFragment) {
+                    findNavController().navigate(R.id.go_to_users)
+                }
             }
             ?: let {
                 binding.topAppBar.title = getString(R.string.mine)

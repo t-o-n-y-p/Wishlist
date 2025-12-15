@@ -21,10 +21,10 @@ class GiftsEditFragmentViewModel @Inject constructor(
     private val cache: WizardCache
 ) : ViewModel() {
 
-    private val mCreateOrEditState =
-        MutableLiveData<CreateOrEditState>(CreateOrEditState.NotSet)
-    val createOrEditState: LiveData<CreateOrEditState>
-        get() = mCreateOrEditState
+    private val mOperationState =
+        MutableLiveData<OperationState>(OperationState.NotSet)
+    val operationState: LiveData<OperationState>
+        get() = mOperationState
 
     fun fillFieldsFromCache(binding: FragmentGiftsEditBinding) =
         cache.currentGift?.apply {
@@ -37,7 +37,7 @@ class GiftsEditFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 cache.currentGift?.apply {
-                    mCreateOrEditState.value = CreateOrEditState.Loading
+                    mOperationState.value = OperationState.Loading
                     useCase.updateGift(
                         id = id,
                         name = name,
@@ -47,9 +47,9 @@ class GiftsEditFragmentViewModel @Inject constructor(
                     this.name = name
                     this.description = description
                     this.price = price
-                    mCreateOrEditState.value = CreateOrEditState.Success
+                    mOperationState.value = OperationState.Success
                 } ?: let {
-                    mCreateOrEditState.value = CreateOrEditState.Loading
+                    mOperationState.value = OperationState.Loading
                     val createResponse: Gift =
                         useCase.createGift(
                             wishlistId = cache.currentWishlist?.id.orEmpty(),
@@ -64,10 +64,10 @@ class GiftsEditFragmentViewModel @Inject constructor(
                         price = price
                     )
                     cache.currentWishlist?.gifts?.add(newGift)
-                    mCreateOrEditState.value = CreateOrEditState.Success
+                    mOperationState.value = OperationState.Success
                 }
             } catch (_: Throwable) {
-                mCreateOrEditState.value = CreateOrEditState.Error
+                mOperationState.value = OperationState.Error
             }
         }
 
@@ -77,14 +77,14 @@ class GiftsEditFragmentViewModel @Inject constructor(
     fun getFragmentResultRequestKey() =
         cache.currentGift?.let { FRAGMENT_GIFTS_EDIT } ?: FRAGMENT_GIFTS_CREATE
 
-    sealed class CreateOrEditState {
+    sealed class OperationState {
 
-        data object NotSet: CreateOrEditState()
+        data object NotSet: OperationState()
 
-        data object Loading: CreateOrEditState()
+        data object Loading: OperationState()
 
-        data object Success: CreateOrEditState()
+        data object Success: OperationState()
 
-        data object Error : CreateOrEditState()
+        data object Error : OperationState()
     }
 }

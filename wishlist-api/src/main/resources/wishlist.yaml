@@ -378,6 +378,8 @@ components:
           format: uuid
         username:
           type: string
+        email:
+          type: string
     Wishlist:
       type: object
       properties:

@@ -74,16 +74,28 @@ class GiftsFragmentViewModel @Inject constructor(
     fun deleteGiftItem(item: GiftsItem) =
         viewModelScope.launch {
             try {
-                item.deleteInProgress()
+                item.operationInProgress()
                 useCase.deleteGift(item.id).getOrThrow()
-                item.deleteSuccess()
+                item.operationSuccess()
                 cache.currentWishlist?.gifts?.apply {
                     remove(item)
                     mContentState.value = this
                     ifEmpty { mDataState.value = DataState.Empty }
                 }
             } catch (_: Throwable) {
-                item.deleteError()
+                item.operationError()
+            }
+        }
+
+    fun reserveGiftItem(item: GiftsItem) =
+        viewModelScope.launch {
+            try {
+                item.operationInProgress()
+                val response = useCase.reserveGift(item.id).getOrThrow()
+                item.reserved = response.reserved ?: false
+                item.operationSuccess()
+            } catch (_: Throwable) {
+                item.operationError()
             }
         }
 

@@ -6,17 +6,20 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.serializer
 
-inline fun <reified T> SharedPreferences.get(): T? =
-    getString(T::class.simpleName, "{}")?.let { Json.decodeFromString<T>(it) }
+inline fun <reified T> SharedPreferences.get(): T {
+    val result = getString(T::class.simpleName, null) ?: "{}"
+    return Json.decodeFromString<T>(result)
+}
 
 inline fun <reified T> SharedPreferences.put(value: T) =
-    edit {
+    edit(commit = true) {
         putString(
             T::class.simpleName,
             Json.encodeToString(EmptySerializersModule().serializer(), value))
     }
 
-inline fun <reified T> SharedPreferences.cleanup() =
-    edit {
-        putString(T::class.simpleName, null)
-    }
+fun SharedPreferences.logout() =
+    put(UserPreferences(logoutEvent = UserPreferences.LogoutEvent.LOGOUT))
+
+fun SharedPreferences.forceLogout() =
+    put(UserPreferences(logoutEvent = UserPreferences.LogoutEvent.FORCE_LOGOUT))

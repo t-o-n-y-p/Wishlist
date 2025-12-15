@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="BottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
@@ -188,6 +188,15 @@
     <style name="Alert.Button" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">?attr/contentColor</item>
         <item name="android:textAppearance">@style/TextAppearance.Button.Modal</item>
+    </style>
+
+    <style name="Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="thumbTint">@color/switch_thumb_color</item>
+        <item name="trackTint">?attr/tintColor</item>
+        <item name="trackDecorationTint">@color/switch_thumb_color</item>
+        <item name="thumbIcon">@drawable/thumb_icon</item>
+        <item name="thumbIconSize">24dp</item>
+        <item name="thumbIconTint">?attr/mainColor</item>
     </style>
 
 </resources>

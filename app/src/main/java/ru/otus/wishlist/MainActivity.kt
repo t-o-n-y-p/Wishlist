@@ -7,13 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.databinding.ActivityMainBinding
 import ru.otus.wishlist.storage.UserPreferences
 import ru.otus.wishlist.storage.get
-import ru.otus.wishlist.storage.put
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,11 +21,31 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var sharedPreferences: SharedPreferences
 
     private lateinit var binding: ActivityMainBinding
+    private val logoutListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        key
+            ?.takeIf { it == UserPreferences::class.simpleName }
+            ?.let { sharedPreferences.get<UserPreferences>() }
+            ?.takeIf { it.isNotLoggedIn() }
+            ?.let {
+                binding.fragmentContainer
+                    .getFragment<NavHostFragment>()
+                    .navController
+                    .navigate(R.id.logout)
+                if (it.logoutEvent == UserPreferences.LogoutEvent.FORCE_LOGOUT) {
+                    MaterialAlertDialogBuilder(this, R.style.Alert)
+                        .setTitle(getString(R.string.error))
+                        .setMessage(getString(R.string.you_must_log_in_again))
+                        .setPositiveButton(getString(R.string.ok)) { _, _ -> }
+                        .show()
+                }
+            }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        if (sharedPreferences.get<UserPreferences>()?.isLoggedIn() ?: false) {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(logoutListener)
+        if (sharedPreferences.get<UserPreferences>().isLoggedIn()) {
             binding.fragmentContainer
                 .getFragment<NavHostFragment>()
                 .navController

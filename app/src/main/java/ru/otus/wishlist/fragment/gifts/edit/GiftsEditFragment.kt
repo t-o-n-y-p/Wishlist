@@ -15,7 +15,6 @@ import ru.otus.wishlist.fragment.SUCCESS
 import ru.otus.wishlist.fragment.dismissWithToast
 import ru.otus.wishlist.fragment.setFragmentResult
 import ru.otus.wishlist.fragment.showErrorAlert
-import ru.otus.wishlist.fragment.wishlists.edit.WishlistsEditFragmentViewModel
 
 @AndroidEntryPoint
 class GiftsEditFragment : BottomSheetDialogFragment(R.layout.fragment_gifts_edit) {
@@ -34,17 +33,17 @@ class GiftsEditFragment : BottomSheetDialogFragment(R.layout.fragment_gifts_edit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.createOrEditState.observe(viewLifecycleOwner) {
+        viewModel.operationState.observe(viewLifecycleOwner) {
             when (it) {
-                GiftsEditFragmentViewModel.CreateOrEditState.NotSet -> {
+                GiftsEditFragmentViewModel.OperationState.NotSet -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                 }
-                GiftsEditFragmentViewModel.CreateOrEditState.Loading -> {
+                GiftsEditFragmentViewModel.OperationState.Loading -> {
                     binding.saveButton.isVisible = false
                     binding.waitButton.isVisible = true
                 }
-                GiftsEditFragmentViewModel.CreateOrEditState.Success -> {
+                GiftsEditFragmentViewModel.OperationState.Success -> {
                     dismissWithToast(viewModel.getToastText())
                     setFragmentResult(
                         fragment = viewModel.getFragmentResultRequestKey(),
@@ -52,7 +51,7 @@ class GiftsEditFragment : BottomSheetDialogFragment(R.layout.fragment_gifts_edit
                         value = SUCCESS
                     )
                 }
-                GiftsEditFragmentViewModel.CreateOrEditState.Error -> {
+                GiftsEditFragmentViewModel.OperationState.Error -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                     requireContext().showErrorAlert()

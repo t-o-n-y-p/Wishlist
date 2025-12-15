@@ -5,10 +5,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserPreferences(
     var token: String = "",
-    var name: String = ""
+    var name: String = "",
+    var logoutEvent: LogoutEvent = LogoutEvent.LOGOUT
 ) {
 
     fun getAuthHeaderValue() = "Bearer $token"
 
-    fun isLoggedIn() = token.isNotBlank()
+    fun isLoggedIn() = !isNotLoggedIn()
+
+    fun isNotLoggedIn() = token.isBlank()
+
+    enum class LogoutEvent {
+        LOGOUT,
+        FORCE_LOGOUT
+    }
 }

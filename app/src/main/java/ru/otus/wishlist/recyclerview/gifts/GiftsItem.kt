@@ -8,36 +8,38 @@ data class GiftsItem(
     var name: String = "",
     var description: String = "",
     var price: Int = 0,
-    private val mDeleteState: MutableLiveData<DeleteState> = MutableLiveData(DeleteState.NotSet)
+    var reserved: Boolean = false,
+    private val mOperationState: MutableLiveData<OperationState> =
+        MutableLiveData(OperationState.NotSet)
 ) {
 
-    val deleteState: LiveData<DeleteState>
-        get() = mDeleteState
+    val operationState: LiveData<OperationState>
+        get() = mOperationState
 
-    fun clearDeleteState() {
-        mDeleteState.value = DeleteState.NotSet
+    fun clearOperationState() {
+        mOperationState.value = OperationState.NotSet
     }
 
-    fun deleteInProgress() {
-        mDeleteState.value = DeleteState.Loading
+    fun operationInProgress() {
+        mOperationState.value = OperationState.Loading
     }
 
-    fun deleteSuccess() {
-        mDeleteState.value = DeleteState.Success
+    fun operationSuccess() {
+        mOperationState.value = OperationState.Success
     }
 
-    fun deleteError() {
-        mDeleteState.value = DeleteState.Error
+    fun operationError() {
+        mOperationState.value = OperationState.Error
     }
 
-    sealed class DeleteState {
+    sealed class OperationState {
 
-        data object NotSet: DeleteState()
+        data object NotSet: OperationState()
 
-        data object Loading: DeleteState()
+        data object Loading: OperationState()
 
-        data object Success: DeleteState()
+        data object Success: OperationState()
 
-        data object Error : DeleteState()
+        data object Error : OperationState()
     }
 }

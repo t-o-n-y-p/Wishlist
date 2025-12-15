@@ -1,24 +1,24 @@
 package ru.otus.wishlist.fragment.main
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentAppMainBinding
-import ru.otus.wishlist.fragment.FRAGMENT_PROFILE_TAB
-import ru.otus.wishlist.fragment.LOGIN_STATUS
-import ru.otus.wishlist.fragment.LOGOUT
 
 @AndroidEntryPoint
 class AppMainFragment : Fragment(R.layout.fragment_app_main) {
 
     private lateinit var binding: FragmentAppMainBinding
+    private val viewModel: AppMainFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,29 +31,43 @@ class AppMainFragment : Fragment(R.layout.fragment_app_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.mine_menu -> navigate(R.id.go_to_mine_tab)
-                R.id.users_menu -> navigate(R.id.go_to_users)
-                R.id.profile_menu -> navigate(R.id.go_to_profile)
-                else -> false
-            }
-        }
-        binding.appMainFragmentContainer
-            .getFragment<Fragment>()
-            .childFragmentManager
-            .setFragmentResultListener(
-                FRAGMENT_PROFILE_TAB,
-                viewLifecycleOwner
-            ) { _, bundle ->
-                when (bundle.getString(LOGIN_STATUS)) {
-                    LOGOUT -> findNavController().navigate(R.id.logout)
+        binding.bottomNavigation.apply {
+            setOnItemSelectedListener {
+                when (it.itemId) {
+                    R.id.mine_menu -> navigate(R.id.go_to_mine_tab)
+                    R.id.users_menu -> navigate(R.id.go_to_users_tab)
+                    R.id.profile_menu -> navigate(R.id.go_to_profile_tab)
+                    else -> false
                 }
             }
+            setOnItemReselectedListener {}
+        }
+//        binding.appMainFragmentContainer
+//            .getFragment<NavHostFragment>()
+//            .childFragmentManager
+//            .setFragmentResultListener(
+//                FRAGMENT_APP_MAIN,
+//                viewLifecycleOwner
+//            ) { _, bundle ->
+//                when (bundle.getString(LOGIN_STATUS)) {
+//                    LOGOUT -> {
+//                        findNavController().navigate(R.id.logout)
+//                    }
+//                    FORCE_LOGOUT -> {
+//                        findNavController().navigate(R.id.logout)
+//                        MaterialAlertDialogBuilder(requireActivity(), R.style.Alert)
+//                            .setTitle(getString(R.string.error))
+//                            .setMessage(getString(R.string.you_must_log_in_again))
+//                            .setPositiveButton(getString(R.string.ok)) { _, _ -> }
+//                            .show()
+//                    }
+//                }
+//            }
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
     }
 
     private fun navigate(resId: Int): Boolean {
+        viewModel.clearCurrentUser()
         binding.appMainFragmentContainer.findNavController().navigate(resId)
         return true
     }

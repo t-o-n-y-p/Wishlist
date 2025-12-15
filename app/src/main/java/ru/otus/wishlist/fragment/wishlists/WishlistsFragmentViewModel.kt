@@ -48,7 +48,10 @@ class WishlistsFragmentViewModel @Inject constructor(
         refreshDataTask = viewModelScope.launch {
             try {
                 mDataState.value = DataState.Loading
-                val data = useCase.getAllWishlists().getOrThrow()
+                val result = cache.currentUser?.id?.let {
+                    useCase.getUserWishlists(it)
+                } ?: useCase.getAllWishlists()
+                val data = result.getOrThrow()
                 data.takeIf { it.isEmpty() }
                     ?.let { mDataState.value = DataState.Empty }
                     ?: let {
@@ -63,7 +66,8 @@ class WishlistsFragmentViewModel @Inject constructor(
                                             id = gift.id.orEmpty(),
                                             name = gift.name.orEmpty(),
                                             description = gift.description.orEmpty(),
-                                            price = gift.price?.toInt() ?: 0)
+                                            price = gift.price?.toInt() ?: 0,
+                                            reserved = gift.reserved ?: false)
                                     }.orEmpty().toMutableList()
                             )
                         }.toMutableList()

@@ -2,9 +2,8 @@ package ru.otus.wishlist.fragment
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Build.VERSION.SDK_INT
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -12,7 +11,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.setFragmentResult
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 import ru.otus.wishlist.R
+import ru.otus.wishlist.storage.forceLogout
+import java.io.IOException
 
 fun BottomSheetDialogFragment.dismissWithToast(resId: Int) {
     dismiss()
@@ -40,10 +44,17 @@ fun FragmentActivity.showConfirmationAlert(action: (DialogInterface, Int) -> Uni
         .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
         .show()
 
-inline fun <reified T : Parcelable> Fragment.getParcelable(): T? =
-    arguments?.let {
+suspend fun <T> call(sharedPreferences: SharedPreferences, block: suspend () -> Response<T>): Result<T> =
+    runCatching {
+        val response = withContext(Dispatchers.IO) {
+            block()
+        }
         when {
-            SDK_INT >= 33 -> it.getParcelable("data", T::class.java)
-            else -> @Suppress("deprecation") it.getParcelable("data")
+            response.code() == 200 -> response.body() ?: throw IOException()
+            response.code() == 401 -> {
+                sharedPreferences.forceLogout()
+                throw SecurityException()
+            }
+            else -> throw IOException()
         }
     }

@@ -10,7 +10,4 @@ interface UsersService {
 
     @GET("users")
     suspend fun getAllUsers(): Response<List<User>>
-
-    @GET("users/{userId}/wishlists")
-    suspend fun getUserWishlists(@Path("userId") userId: String): Response<List<Wishlist>>
 }

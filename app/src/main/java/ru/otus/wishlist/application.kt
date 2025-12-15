@@ -63,10 +63,11 @@ class Module {
     @Singleton
     fun usersService(
         okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
+        converterFactory: Converter.Factory,
+        authInterceptor: AuthInterceptor
     ): UsersService =
         Retrofit.Builder()
-            .client(okHttpClient)
+            .client(okHttpClient.newBuilder().addInterceptor(authInterceptor).build())
             .baseUrl(hostname)
             .addConverterFactory(converterFactory)
             .build()

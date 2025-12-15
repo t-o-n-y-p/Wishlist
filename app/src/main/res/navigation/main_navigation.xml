@@ -3,42 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@+id/wishlists_fragment">
+    app:startDestination="@+id/mine_tab_fragment">
 
     <fragment
-        android:id="@+id/wishlists_fragment"
+        android:id="@+id/mine_tab_fragment"
         android:name="ru.otus.wishlist.fragment.tab.mine.MineTabFragment"
         tools:layout="@layout/fragment_mine_tab">
         <action
-            android:id="@+id/go_to_users"
-            app:destination="@+id/users_fragment"/>
+            android:id="@+id/go_to_users_tab"
+            app:destination="@+id/users_tab_fragment"/>
         <action
-            android:id="@+id/go_to_profile"
-            app:destination="@+id/profile_fragment"/>
+            android:id="@+id/go_to_profile_tab"
+            app:destination="@+id/profile_tab_fragment"/>
     </fragment>
 
     <fragment
-        android:id="@+id/users_fragment"
-        android:name="ru.otus.wishlist.fragment.users.UsersFragment"
+        android:id="@+id/users_tab_fragment"
+        android:name="ru.otus.wishlist.fragment.tab.users.UsersTabFragment"
         tools:layout="@layout/fragment_users">
         <action
             android:id="@+id/go_to_mine_tab"
-            app:destination="@+id/wishlists_fragment"/>
+            app:destination="@+id/mine_tab_fragment"/>
         <action
-            android:id="@+id/go_to_profile"
-            app:destination="@+id/profile_fragment"/>
+            android:id="@+id/go_to_profile_tab"
+            app:destination="@+id/profile_tab_fragment"/>
     </fragment>
 
     <fragment
-        android:id="@+id/profile_fragment"
+        android:id="@+id/profile_tab_fragment"
         android:name="ru.otus.wishlist.fragment.tab.profile.ProfileTabFragment"
         tools:layout="@layout/fragment_profile_tab">
         <action
             android:id="@+id/go_to_mine_tab"
-            app:destination="@+id/wishlists_fragment"/>
+            app:destination="@+id/mine_tab_fragment"/>
         <action
-            android:id="@+id/go_to_users"
-            app:destination="@+id/users_fragment"/>
+            android:id="@+id/go_to_users_tab"
+            app:destination="@+id/users_tab_fragment"/>
     </fragment>
 
 </navigation>
