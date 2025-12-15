@@ -65,6 +65,9 @@ class GiftsEditFragment : BottomSheetDialogFragment(R.layout.fragment_gifts_edit
                 price = binding.priceInput.text.toString().toInt()
             )
         }
-        viewModel.fillFieldsFromCache(binding)
+        viewModel.fillFieldsFromCache(
+            binding,
+            editTitle = getString(R.string.gift_edit_title)
+        )
     }
 }

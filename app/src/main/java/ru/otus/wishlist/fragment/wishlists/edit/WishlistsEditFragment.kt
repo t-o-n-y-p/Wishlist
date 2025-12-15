@@ -33,17 +33,17 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.createOrEditState.observe(viewLifecycleOwner) {
+        viewModel.operationState.observe(viewLifecycleOwner) {
             when (it) {
-                WishlistsEditFragmentViewModel.CreateOrEditState.NotSet -> {
+                WishlistsEditFragmentViewModel.OperationState.NotSet -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Loading -> {
+                WishlistsEditFragmentViewModel.OperationState.Loading -> {
                     binding.saveButton.isVisible = false
                     binding.waitButton.isVisible = true
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Success -> {
+                WishlistsEditFragmentViewModel.OperationState.Success -> {
                     dismissWithToast(viewModel.getToastText())
                     setFragmentResult(
                         fragment = viewModel.getFragmentResultRequestKey(),
@@ -51,7 +51,7 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
                         value = SUCCESS
                     )
                 }
-                WishlistsEditFragmentViewModel.CreateOrEditState.Error -> {
+                WishlistsEditFragmentViewModel.OperationState.Error -> {
                     binding.saveButton.isVisible = true
                     binding.waitButton.isVisible = false
                     requireContext().showErrorAlert()
@@ -64,6 +64,9 @@ class WishlistsEditFragment : BottomSheetDialogFragment(R.layout.fragment_wishli
                 description = binding.descriptionInput.text.toString()
             )
         }
-        viewModel.fillFieldsFromCache(binding)
+        viewModel.fillFieldsFromCache(
+            binding,
+            editTitle = getString(R.string.wishlist_edit_title)
+        )
     }
 }

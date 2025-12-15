@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import ru.otus.wishlist.DtoMapper
 import ru.otus.wishlist.R
 import ru.otus.wishlist.WizardCache
 import ru.otus.wishlist.api.models.Gift
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GiftsEditFragmentViewModel @Inject constructor(
     private val useCase: GiftsEditFragmentUseCase,
-    private val cache: WizardCache
+    private val cache: WizardCache,
+    private val mapper: DtoMapper
 ) : ViewModel() {
 
     private val mOperationState =
@@ -26,11 +28,12 @@ class GiftsEditFragmentViewModel @Inject constructor(
     val operationState: LiveData<OperationState>
         get() = mOperationState
 
-    fun fillFieldsFromCache(binding: FragmentGiftsEditBinding) =
+    fun fillFieldsFromCache(binding: FragmentGiftsEditBinding, editTitle: String) =
         cache.currentGift?.apply {
             binding.nameInput.setText(name)
             binding.descriptionInput.setText(description)
             binding.priceInput.setText(price.toString())
+            binding.giftEditTitle.text = editTitle
         }
 
     fun createOrUpdateGift(name: String, description: String, price: Int) =
@@ -57,12 +60,7 @@ class GiftsEditFragmentViewModel @Inject constructor(
                             description = description,
                             price = price
                         ).getOrThrow()
-                    val newGift = GiftsItem(
-                        id = createResponse.id.orEmpty(),
-                        name = name,
-                        description = description,
-                        price = price
-                    )
+                    val newGift = mapper.mapToGiftsItem(createResponse)
                     cache.currentWishlist?.gifts?.add(newGift)
                     mOperationState.value = OperationState.Success
                 }

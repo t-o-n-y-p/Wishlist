@@ -157,6 +157,6 @@ class WishlistsFragment : Fragment(R.layout.fragment_wishlists) {
             ?: let {
                 binding.topAppBar.title = getString(R.string.mine)
             }
-        viewModel.loadWishlistsAndSaveToCache()
+        viewModel.fillWishlistsFromCache()
     }
 }

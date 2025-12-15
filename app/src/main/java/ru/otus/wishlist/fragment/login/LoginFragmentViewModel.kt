@@ -30,7 +30,7 @@ class LoginFragmentViewModel @Inject constructor(
                     password = password
                 ).getOrThrow()
                 sharedPreferences.put(
-                    UserPreferences(name = username, token = tokenResponse.token.orEmpty())
+                    UserPreferences(username = username, token = tokenResponse.token.orEmpty())
                 )
                 mLoginState.value = LoginState.Success
             } catch (_: Throwable) {

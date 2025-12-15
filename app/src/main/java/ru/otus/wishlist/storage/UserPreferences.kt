@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserPreferences(
     var token: String = "",
-    var name: String = "",
+    var username: String = "",
     var logoutEvent: LogoutEvent = LogoutEvent.LOGOUT
 ) {
 

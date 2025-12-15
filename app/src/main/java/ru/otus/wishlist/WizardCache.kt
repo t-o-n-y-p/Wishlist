@@ -1,5 +1,7 @@
 package ru.otus.wishlist
 
+import android.os.Bundle
+import android.os.Parcelable
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import ru.otus.wishlist.recyclerview.gifts.GiftsItem
 import ru.otus.wishlist.recyclerview.users.UsersItem
@@ -10,6 +12,7 @@ import javax.inject.Inject
 class WizardCache @Inject constructor() {
 
     var users: MutableList<UsersItem> = mutableListOf()
+    var filteredUsers: List<UsersItem> = mutableListOf()
     var currentUser: UsersItem? = null
     var usernameFilter: String = ""
     var wishlists: MutableList<WishlistsItem> = mutableListOf()
@@ -17,4 +20,15 @@ class WizardCache @Inject constructor() {
     var currentWishlistPosition: Int = 0
     var currentGift: GiftsItem? = null
     var currentGiftPosition: Int = 0
+
+    fun clear() {
+        users = mutableListOf()
+        currentUser = null
+        usernameFilter = ""
+        wishlists = mutableListOf()
+        currentWishlist = null
+        currentWishlistPosition = 0
+        currentGift = null
+        currentGiftPosition = 0
+    }
 }

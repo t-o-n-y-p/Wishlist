@@ -10,7 +10,7 @@ class AppMainFragmentViewModel @Inject constructor(
     private val cache: WizardCache
 ) : ViewModel() {
 
-    fun clearCurrentUser() {
-        cache.currentUser = null
+    fun clearCache() {
+        cache.clear()
     }
 }

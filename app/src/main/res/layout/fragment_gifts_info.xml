@@ -39,7 +39,7 @@
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/action_container"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="@+id/title"
         app:layout_constraintBottom_toBottomOf="@+id/subtitle"
         tools:text="1000 ₽"
@@ -47,6 +47,13 @@
         android:ellipsize="end"
         android:paddingEnd="8dp"
         android:gravity="center_vertical"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.75"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/action_container"

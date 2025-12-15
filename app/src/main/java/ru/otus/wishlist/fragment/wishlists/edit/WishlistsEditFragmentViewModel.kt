@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import ru.otus.wishlist.DtoMapper
 import ru.otus.wishlist.R
 import ru.otus.wishlist.WizardCache
 import ru.otus.wishlist.api.models.Wishlist
@@ -18,25 +19,27 @@ import javax.inject.Inject
 @HiltViewModel
 class WishlistsEditFragmentViewModel @Inject constructor(
     private val useCase: WishlistsEditFragmentUseCase,
-    private val cache: WizardCache
+    private val cache: WizardCache,
+    private val mapper: DtoMapper
 ) : ViewModel() {
 
-    private val mCreateOrEditState =
-        MutableLiveData<CreateOrEditState>(CreateOrEditState.NotSet)
-    val createOrEditState: LiveData<CreateOrEditState>
-        get() = mCreateOrEditState
+    private val mOperationState =
+        MutableLiveData<OperationState>(OperationState.NotSet)
+    val operationState: LiveData<OperationState>
+        get() = mOperationState
 
-    fun fillFieldsFromCache(binding: FragmentWishlistsEditBinding) =
+    fun fillFieldsFromCache(binding: FragmentWishlistsEditBinding, editTitle: String) =
         cache.currentWishlist?.apply {
             binding.titleInput.setText(title)
             binding.descriptionInput.setText(description)
+            binding.wishlistEditTitle.text = editTitle
         }
 
     fun createOrUpdateWishlist(title: String, description: String) =
         viewModelScope.launch {
             try {
                 cache.currentWishlist?.apply {
-                    mCreateOrEditState.value = CreateOrEditState.Loading
+                    mOperationState.value = OperationState.Loading
                     useCase.updateWishlist(
                         id = id,
                         title = title,
@@ -44,24 +47,20 @@ class WishlistsEditFragmentViewModel @Inject constructor(
                     ).getOrThrow()
                     this.title = title
                     this.description = description
-                    mCreateOrEditState.value = CreateOrEditState.Success
+                    mOperationState.value = OperationState.Success
                 } ?: let {
-                    mCreateOrEditState.value = CreateOrEditState.Loading
+                    mOperationState.value = OperationState.Loading
                     val createResponse: Wishlist =
                         useCase.createWishlist(
                             title = title,
                             description = description
                         ).getOrThrow()
-                    val newWishlist = WishlistsItem(
-                        id = createResponse.id.orEmpty(),
-                        title = title,
-                        description = description
-                    )
+                    val newWishlist = mapper.mapToWishlistsItem(createResponse)
                     cache.wishlists.add(newWishlist)
-                    mCreateOrEditState.value = CreateOrEditState.Success
+                    mOperationState.value = OperationState.Success
                 }
             } catch (_: Throwable) {
-                mCreateOrEditState.value = CreateOrEditState.Error
+                mOperationState.value = OperationState.Error
             }
         }
 
@@ -71,14 +70,14 @@ class WishlistsEditFragmentViewModel @Inject constructor(
     fun getFragmentResultRequestKey() =
         cache.currentWishlist?.let { FRAGMENT_WISHLISTS_EDIT } ?: FRAGMENT_WISHLISTS_CREATE
 
-    sealed class CreateOrEditState {
+    sealed class OperationState {
 
-        data object NotSet: CreateOrEditState()
+        data object NotSet: OperationState()
 
-        data object Loading: CreateOrEditState()
+        data object Loading: OperationState()
 
-        data object Success: CreateOrEditState()
+        data object Success: OperationState()
 
-        data object Error : CreateOrEditState()
+        data object Error : OperationState()
     }
 }

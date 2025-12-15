@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.otus.wishlist.R
 import ru.otus.wishlist.databinding.FragmentUsersBinding
+import ru.otus.wishlist.fragment.FRAGMENT_USERS_FILTER
 import ru.otus.wishlist.fragment.RECYCLER_VIEW_PAGE_SIZE
+import ru.otus.wishlist.fragment.RESULT
+import ru.otus.wishlist.fragment.SUCCESS
+import ru.otus.wishlist.fragment.users.filter.UsersFilterFragment
 import ru.otus.wishlist.recyclerview.users.UsersItemAdapter
 import kotlin.math.min
 
@@ -43,6 +48,13 @@ class UsersFragment : Fragment(R.layout.fragment_users) {
             addOnScrollListener(
                 viewModel.getOnScrollListener(
                     this@UsersFragment.adapter, RECYCLER_VIEW_PAGE_SIZE))
+        }
+        setFragmentResultListener(FRAGMENT_USERS_FILTER) { _, bundle ->
+            when (bundle.getString(RESULT)) {
+                SUCCESS -> {
+                    viewModel.fillUsersFromCache(binding)
+                }
+            }
         }
         viewModel.dataState.observe(viewLifecycleOwner) {
             when (it) {
@@ -81,6 +93,22 @@ class UsersFragment : Fragment(R.layout.fragment_users) {
         viewModel.contentState.observe(viewLifecycleOwner) {
             adapter.submitList(it.slice(0 until min(it.size, RECYCLER_VIEW_PAGE_SIZE)))
         }
-        viewModel.fillUsersFromCache()
+        binding.topAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.filter -> {
+                    UsersFilterFragment().show(
+                        parentFragmentManager,
+                        UsersFilterFragment::class.simpleName
+                    )
+                    true
+                }
+                else -> false
+            }
+        }
+        binding.clearFilterButton.setOnClickListener {
+            viewModel.clearUsersFilter()
+            viewModel.fillUsersFromCache(binding)
+        }
+        viewModel.fillUsersFromCache(binding)
     }
 }

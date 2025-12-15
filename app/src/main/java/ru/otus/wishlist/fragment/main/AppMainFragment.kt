@@ -42,32 +42,11 @@ class AppMainFragment : Fragment(R.layout.fragment_app_main) {
             }
             setOnItemReselectedListener {}
         }
-//        binding.appMainFragmentContainer
-//            .getFragment<NavHostFragment>()
-//            .childFragmentManager
-//            .setFragmentResultListener(
-//                FRAGMENT_APP_MAIN,
-//                viewLifecycleOwner
-//            ) { _, bundle ->
-//                when (bundle.getString(LOGIN_STATUS)) {
-//                    LOGOUT -> {
-//                        findNavController().navigate(R.id.logout)
-//                    }
-//                    FORCE_LOGOUT -> {
-//                        findNavController().navigate(R.id.logout)
-//                        MaterialAlertDialogBuilder(requireActivity(), R.style.Alert)
-//                            .setTitle(getString(R.string.error))
-//                            .setMessage(getString(R.string.you_must_log_in_again))
-//                            .setPositiveButton(getString(R.string.ok)) { _, _ -> }
-//                            .show()
-//                    }
-//                }
-//            }
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
     }
 
     private fun navigate(resId: Int): Boolean {
-        viewModel.clearCurrentUser()
+        viewModel.clearCache()
         binding.appMainFragmentContainer.findNavController().navigate(resId)
         return true
     }

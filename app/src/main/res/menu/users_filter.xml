@@ -4,6 +4,6 @@
     <item
         android:id="@+id/filter"
         app:showAsAction="always"
-        android:icon="@drawable/tune_512dp_1f1f1f_fill0_wght700_grad0_opsz48"
+        android:icon="@drawable/filter_alt_512dp_1f1f1f_fill0_wght400_grad200_opsz48"
         android:title="@string/filter"/>
 </menu>

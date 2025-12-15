@@ -37,4 +37,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        style="@style/FloatingActionButton"
+        android:id="@+id/clear_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/filter_alt_off_512dp_1f1f1f_fill0_wght400_grad200_opsz48"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

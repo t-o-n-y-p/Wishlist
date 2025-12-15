@@ -19,7 +19,7 @@ class ProfileTabFragmentViewModel @Inject constructor(
     fun fillDataFromPreferences(binding: FragmentProfileTabBinding) =
         sharedPreferences.get<UserPreferences>()
             .takeIf { it.isLoggedIn() }
-            ?.let { binding.usernameText.text = it.name }
+            ?.let { binding.usernameText.text = it.username }
 
     fun logout() {
         sharedPreferences.logout()

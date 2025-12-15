@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import ru.otus.wishlist.DtoMapper
 import ru.otus.wishlist.WizardCache
 import ru.otus.wishlist.recyclerview.gifts.GiftsItem
 import ru.otus.wishlist.recyclerview.wishlists.WishlistsItem
@@ -19,7 +20,8 @@ import kotlin.math.min
 @HiltViewModel
 class WishlistsFragmentViewModel @Inject constructor(
     private val useCase: WishlistsFragmentUseCase,
-    private val cache: WizardCache
+    private val cache: WizardCache,
+    private val mapper: DtoMapper
 ) : ViewModel() {
 
     private val mDataState = MutableLiveData<DataState>(DataState.NotSet)
@@ -43,7 +45,6 @@ class WishlistsFragmentViewModel @Inject constructor(
     }
 
     fun loadWishlistsAndSaveToCache() {
-        cache.wishlists.clear()
         refreshDataTask.cancel()
         refreshDataTask = viewModelScope.launch {
             try {
@@ -52,28 +53,13 @@ class WishlistsFragmentViewModel @Inject constructor(
                     useCase.getUserWishlists(it)
                 } ?: useCase.getAllWishlists()
                 val data = result.getOrThrow()
-                data.takeIf { it.isEmpty() }
-                    ?.let { mDataState.value = DataState.Empty }
-                    ?: let {
-                        cache.wishlists = data.map {
-                            WishlistsItem(
-                                id = it.id.orEmpty(),
-                                title = it.title.orEmpty(),
-                                description = it.description.orEmpty(),
-                                gifts =
-                                    it.gifts?.map { gift ->
-                                        GiftsItem(
-                                            id = gift.id.orEmpty(),
-                                            name = gift.name.orEmpty(),
-                                            description = gift.description.orEmpty(),
-                                            price = gift.price?.toInt() ?: 0,
-                                            reserved = gift.reserved ?: false)
-                                    }.orEmpty().toMutableList()
-                            )
-                        }.toMutableList()
+                data.takeIf { it.isNotEmpty() }
+                    ?.let {
+                        cache.wishlists = mapper.mapToWishlistsItem(it)
                         mContentState.value = cache.wishlists
                         mDataState.value = DataState.Content
                     }
+                    ?: let { mDataState.value = DataState.Empty }
             } catch (_: Throwable) {
                 mDataState.value = DataState.Error
             }
